@@ -11,8 +11,8 @@ Note:
 1. Code is written considering this url:  https://jsonplaceholder.typicode.com/posts/1 
 2. Application reads input URL from command Line example:  https://jsonplaceholder.typicode.com/posts/1 
 
-**Kindly note that I have done the basic implementation with java code considering the limited time frame. **
-
+****Kindly note that I have done the basic implementation with java code considering the limited time frame. **
+**
 Few Basic Level Improvements can be also be done:
 - Improve Exception handling by adding custom exceptions, handling different generic response codes.
 - Add URL validations.
