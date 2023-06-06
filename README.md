@@ -22,6 +22,7 @@ Few Basic Level Improvements can be also be done:
 - Proper Logging using sl4j or log4j.
 - configure url in application.properties
 - Can be implemented with spring boot by calling this functionality using api or other framework.
+- Javadoc can be added.
 
 
 
