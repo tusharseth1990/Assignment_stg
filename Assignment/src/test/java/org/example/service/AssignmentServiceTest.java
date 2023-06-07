@@ -1,20 +1,24 @@
 package org.example.service;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.example.service.AssignmentService.fetchApiAndGetUniquePost;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AssignmentServiceTest {
 
     @Test
-    void testFetchApiAndGetUniquePost_Success() {
+    void testFetchApiAndGetUniquePost_Success() throws IOException{
         // Test with a valid API URL
         String apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
 
         // Run the method under test
-        String result = AssignmentService.fetchApiAndGetUniquePost(apiUrl);
+        String result = fetchApiAndGetUniquePost(apiUrl);
 
         // Verify the result
         assertEquals("quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto", result);
@@ -26,24 +30,10 @@ class AssignmentServiceTest {
         String apiUrl = "https://jsonplaceholder.typicode.com/nonexistent";
 
         // Run the method under test
-        String result = AssignmentService.fetchApiAndGetUniquePost(apiUrl);
+        String result = fetchApiAndGetUniquePost(apiUrl);
 
         // Verify the result
         assertEquals("", result);
-    }
-
-    @Test
-    void testFetchApiAndGetUniquePost_EmptyUrl() {
-        // Test with a valid API URL
-        String apiUrl = "";
-
-        // Run the method under test
-        String result = AssignmentService.fetchApiAndGetUniquePost(apiUrl);
-
-        //String expected ="quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto";
-        // Verify the result
-        assertEquals("", result);
-
     }
 
     @Test
@@ -52,10 +42,10 @@ class AssignmentServiceTest {
         String test = "HelloWorld";
 
         // Run the method under test
-        int result = AssignmentService.countEachCharacter(test);
+        Map<Character,Integer> result = AssignmentService.countEachCharacter(test);
 
         // Verify the result
-        assertEquals(7, result);
+        assertEquals(7, result.size());
     }
 
     @Test
@@ -64,24 +54,11 @@ class AssignmentServiceTest {
         String test = "";
 
         // Run the method under test
-        int result = AssignmentService.countEachCharacter(test);
+        Map<Character,Integer> result = AssignmentService.countEachCharacter(test);
 
         // Verify the result
-        assertEquals(0, result);
+        assertTrue(result.isEmpty());
     }
-
-    @Test
-    void testCountEachCharacterWithOnlyNewLine() {
-        // Test with a sample post body
-        String test = "";
-
-        // Run the method under test
-        int result = AssignmentService.countEachCharacter(test);
-
-        // Verify the result
-        assertEquals(0, result);
-    }
-
 
     @Test
     void testCountEachCharacterCaseSensitive() {
@@ -89,44 +66,65 @@ class AssignmentServiceTest {
         String test = "Hhhhttt";
 
         // Run the method under test
-        int result = AssignmentService.countEachCharacter(test.toLowerCase());
+        Map<Character,Integer> result = AssignmentService.countEachCharacter(test.toLowerCase());
 
         // Verify the result
-        assertEquals(2, result);
+        assertEquals(4, result.get('h'));
+        assertEquals(3, result.get('t'));
     }
 
     @Test
     void testCountEachCharacterCaseSensitiveAndNewLine() {
         // Test with a sample post body
-        String test = "Hhhhttt\n";
+        String test = "hhhhtest\n";
 
         // Run the method under test
-        int result = AssignmentService.countEachCharacter(test.toLowerCase());
+        Map<Character,Integer> result = AssignmentService.countEachCharacter(test.toLowerCase());
 
         // Verify the result
-        assertEquals(2, result);
+        assertEquals(4, result.get('h'));
+        assertFalse(result.containsKey("\n"));
+
     }
 
     @Test
-    void testCountEachCharacterCaseSensitiveNewLineAndSpace() {
+    void testCountEachCharacterCaseSensitiveWithDuplicateChars() {
         // Test with a sample post body
         String test = "Hhhh ttt\n";
 
         // Run the method under test
-        int result = AssignmentService.countEachCharacter(test.toLowerCase());
+        Map<Character,Integer> result = AssignmentService.countEachCharacter(test.toLowerCase());
 
         // Verify the result
-        assertEquals(2, result);
+        assertEquals(4, result.get('h'));
+        assertEquals(3, result.get('t'));
+        assertFalse(result.containsKey("\s"));
+        assertFalse(result.containsKey("\n"));
     }
 
-
+    @Test
+    public void testCharacterCount_EmptyString() {
+        String input = "";
+        Map<Character, Integer> characterCount = AssignmentService.countEachCharacter(input);
+        assertTrue(characterCount.isEmpty());
+    }
 
     @Test
-    public void testFetchApiAndGetUniquePost_Success2()  {
-        String url = "https://api.example.com/endpoint";
-        String result = AssignmentService.fetchApiAndGetUniquePost(url);
-        assertNotNull(result);
-        // Additional assertions on the result if needed
+    public void testCharacterCount_RepeatedCharacters() {
+        String input = "Hello World";
+        Map<Character, Integer> characterCount = AssignmentService.countEachCharacter(input);
+        assertEquals(3, characterCount.get('l'));
+        assertEquals(2, characterCount.get('o'));
+    }
+
+    @Test
+    public void testCharacterCount_UniqueCharacters() {
+        String input = "qwerty";
+        Map<Character, Integer> characterCount = AssignmentService.countEachCharacter(input);
+        assertEquals(6, characterCount.size());
+        assertEquals(1, characterCount.get('q'));
+        assertEquals(1, characterCount.get('r'));
+        assertEquals(1, characterCount.get('y'));
     }
 
 }
