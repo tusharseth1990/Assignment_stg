@@ -2,10 +2,12 @@ package org.example;
 
 import org.example.service.AssignmentService;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AssignmentMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // String url = "https://jsonplaceholder.typicode.com/posts/17";
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter url: ");
@@ -14,9 +16,7 @@ public class AssignmentMain {
             System.out.println("Invalid URL");
         } else {
             String body = AssignmentService.fetchApiAndGetUniquePost(url);
-            int uniqueCount = AssignmentService.countEachCharacter(body);
-            System.out.println("Unique Count = " + uniqueCount);
+            Map<Character,Integer> map = AssignmentService.countEachCharacter(body);
         }
     }
-
 }
